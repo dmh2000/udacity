@@ -1,0 +1,17 @@
+1. decision trees
+2. naive bayes
+    gradient descent
+3. gradient descent
+4. linear regressions
+    gradient descent
+5. logistic regression
+    log loss function
+    gradient descent
+6. support vector machine
+    maximize distance
+    gradient descent
+7. neural networks
+8. kernel method
+9. k-means clustering
+    random cluster -> solution
+10. hierarchical clustering
