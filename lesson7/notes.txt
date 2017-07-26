@@ -1,0 +1,99 @@
+Lesson 7 Evaluation Metrics
+
+Problem -> Tools -> Metrics
+
+Measurement tools for selecting algorithms
+
+generalizing vs overfitting
+
+from sklearn.model_selection import train_test_split
+
+confusion_matrix
+----------------------------------------
+    guessed positive  | guessed negative
+----------------------------------------
+pos  |   true pos     | false neg
+----------------------------------------
+neg  |  false pos     | true neg
+----------------------------------------
+
+ACCURACY
+--------
+accuracy_score - how many classified correctly
+
+ratio of correctly classified points / total points
+accuracy = (true pos + true neg) / total 
+
+accuracy isn't always good
+
+
+PRECISION
+---------
+how useful
+how many positive were actually positive?
+
+minimize false positive
+extreme case    : label all as negative (no false positives)
+medical example : sick people labeled as healthy (important)
+spam example    : spam emails labeled as non-spam (less important)
+
+precision = true positive / (true positive + false positive)
+
+RECALL (sensitivity)
+------
+how complete
+
+minimize false negative
+extreme case    : label all as positive (no false negatives)
+spam example    : good emails labeled as spam (important)
+medical example : healthy people labeled as sick (less important)
+
+true positive / (true positive + false negative)
+
+F1 SCORE
+--------
+
+F1 = 2 * (precision * recall) / (precision + recall)
+
+harmonic mean = 2xy / (x+y) always less than arithmetic mean. closer to smaller value
+
+F-BETA
+------
+model cares more about precision than recall : lower beta
+model cares more about recall than precision : higher beta
+
+F-beta = (1 * beta^2) * (precision * recall) / (beta^2 * (precision + recall))
+
+
+
+fraud detection : high recall - don't miss fraudulent transactions
+medical exmaple : high precision - don't label sick people as healty
+
+
+Receiver Operating Characteristic
+---------------------------------
+
+measure how good the 'split' is (classification)
+perfect split vs good split vs random split
+
+area under a ROC curve
+perfect split = 1.0
+good split    = 0.8
+random split  = 0.5
+
+true positive rate  = true positives / all positives
+false positive rate = false positives / all positives
+
+Metrics
+-------
+
+Mean Absolute Error - not differentiable
+                      sklearn.mean_absolute_error(y,predictions)
+Mean Squared Error  - differentiable
+                      sklearn.mean_squared_error(y,predictions)
+R2 Score            - compare model to simplest possible model
+                      1 - (linear model error / simple model error)
+                      R2 = 0 : bad model
+                      R2 ~ 1 : good model
+                      sklearn.r2_score(y_true,pred_true)
+

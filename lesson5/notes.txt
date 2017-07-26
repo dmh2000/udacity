@@ -1,4 +1,4 @@
-Lesson 5 Training Models
+Lesson 5 Training models
 
 Problem -> Tools -> Metrics
 
@@ -7,19 +7,3 @@ Measurement tools for selecting algorithms
 generalizing vs overfitting
 
 from sklearn.model_selection import train_test_split
-
-confusion_matrix
-----------------------------------------
-    guessed positive  | guessed negative
-----------------------------------------
-pos  |   true pos     | false neg
-----------------------------------------
-neg  |  false neg     | true neg
-----------------------------------------
-
-accuracy_score - how many classified correctly
-
-ratio of correctly classified points / total points
-accuracy = (true pos + true neg) / total 
-
-
