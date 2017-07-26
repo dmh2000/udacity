@@ -1,0 +1,38 @@
+Training approach
+
+training a lot of models
+use cross validation to select model with best F1 score
+test with test data
+
+training a Logistic Regression Model
+-------------------------------------
+train with polynomials of several degrees (1-4)
+use cross validation to calculate F1 score
+pick model with highest F1 score
+test with test data
+
+
+degrees of polynomial is a hyperparameter (meta parameter)
+
+Decision Tree
+hyperparameters -> depth
+
+Support Vector Machine
+-----------------------
+Hyperparameters -> kernel, gamma
+
+
+Grid Search Cross Validation
+----------------------------
+make a grid with each axis a hyperparameter
+test all combinations of hyper parameters
+
+
+How to Solve a Problem
+
+Problem -> Tools -> Measurement tools
+
+Data -> Algorithms -> Metrics
+
+Algorithms -> Decision Tree, Regression, SVM etc
+Metrics -> Accuracy/Precision/Recall/F1, Model Complexity Graph, Learning Curves

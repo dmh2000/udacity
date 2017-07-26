@@ -1,0 +1,49 @@
+Lesson 8 : Detecting Erros
+
+underfitting : oversimplifying 
+    error due to bias 
+    does not do well in training set or testing set
+    example : use a line when data is a curve
+
+overfitting  : overcomplicating  
+    does well in training, but not in testing set
+    error due to variance
+    memorizes the training set
+    example: curve fitting with polynomial of large degree
+
+good model
+    performs well on training and testing set
+
+
+Model Complexity Graph
+----------------------
+
+do not use test data for training
+left = underfit
+right = overfit
+
+
+Cross Validation
+----------------
+separate data set for evaluating model
+
+K-Fold Cross Validation
+-----------------------
+
+train model using multiple permutations of data
+
+sklear.model_selection.KFold
+
+randomize the data
+
+Learning Curves
+---------------
+
+graph training error with cross validation error
+
+look where lines converge or diverge
+
+underfit : lines converge but at high error
+correct  : lines converge at low error
+overfit  : lines don't converge, training error is low, cv error is high
+

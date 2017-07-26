@@ -32,7 +32,7 @@ PRECISION
 how useful
 how many positive were actually positive?
 
-minimize false positive
+*minimize false positive*
 extreme case    : label all as negative (no false positives)
 medical example : sick people labeled as healthy (important)
 spam example    : spam emails labeled as non-spam (less important)
@@ -43,7 +43,7 @@ RECALL (sensitivity)
 ------
 how complete
 
-minimize false negative
+*minimize false negative*
 extreme case    : label all as positive (no false negatives)
 spam example    : good emails labeled as spam (important)
 medical example : healthy people labeled as sick (less important)
