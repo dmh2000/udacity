@@ -1,0 +1,34 @@
+continuous vs discrete output
+
+classification
+    labels
+    uses 'accuracy'
+    decision boundary
+regressions
+    values
+    uses r2
+    numerical model
+
+
+r2   best fit = 1.0
+     0 = no correlation
+     not affected by number of points
+
+
+error = difference between actual and predicted
+
+sum of squared error
+    differentiable
+    amplifies differences in error
+    unique solution vs sum of absolute values
+    computationally efficient
+    disadvantage : more points means larger SSE for comparisons
+
+algorithms:
+    ordinary least squares - closed form, solve linear system of equations
+    gradient descent
+
+
+
+y = 5x1 + 2.5x2 - 80
+

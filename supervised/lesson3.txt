@@ -1,0 +1,27 @@
+Regression
+
+parametric regression
+    linear    : y = mx + b
+    quadratic : y = ax^2 + bx + c
+    math model
+    don't store data
+    queries are fast
+    requires rerun to update
+
+nonparametric regression
+    k-nearest-neighbor
+        find K nearest data points and use mean Y value
+
+    kernel regression
+        data points are weighted
+
+    store data
+    queries are slow
+    update is easy
+
+
+
+
+
+
+

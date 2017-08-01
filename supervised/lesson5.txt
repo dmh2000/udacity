@@ -1,0 +1,128 @@
+supervised learning - decision tree classification
+
+Standard Learning Algorithm
+
+Given a batch set of training data S = {(x1, y1)...(xt, yt)},
+consider a fixed hypothesis class H and compute a function h element of H
+that minimizes empirical error.
+
+REGRESSION
+    numeric model
+    maps input space to (real) numbers
+
+CLASSIFICATION
+maps features to discrete labels
+features can be discreate or continuous, output is discrete
+
+inductive learning
+Instances        - input space, vector of values
+Concept          - possible function that maps inputs to outputs, idea that describes a set of things
+Target Concept   - the answer, actual function that maps input to output
+Hypothesis Class - set of all functions that apply
+Sample           - a training set. a set of features paired with labels
+Candidate        - a particular concept to evaluate
+Testing Set      - evaluates target concept prediction compared to actual
+Generalize       - create model that predicts new examples correctly
+
+DECISION TREE
+-------------
+Representations vs Algorithm
+Nodes encapsulate decisions
+Leaves specify output
+
+algorithm
+(optimal binary decision tree construction is NP-complete)
+
+while no answer:
+    choose best attribute : splits input vector in ~half
+    ask the question
+    follow all paths
+endloop
+
+decision tree nodes can represent boolean functions
+-----------------------------------
+AND (commutative)
+OR  (commutative)
+XOR
+
+decision tree nodes can represent multivariate function
+-----------------------------------
+N-OR  : Any one
+        size of tree O(N)
+N-XOR : Only one, parity
+        number of true's is odd
+        size of tree is O(2^N) NP-Hard
+
+How expressive is a decision tree?
+-----------------------------------
+for N boolean attributes,
+    nodes           = O(N!) a + 2B + 4C + 8D
+    number of trees = O(2^N)
+    leaves          = O(2^N)
+
+    for truth table, number of rows = 2^N
+    for truth table, number of possible output = 2^(2^N)
+
+ID3 algorithm
+-------------
+
+evaluate(remaining attributes)
+    A <- best attribute (maximum Gain(S,A)
+    assign A as decision attribute for node
+    for each value of A
+        create a child node
+    sort training examples to leaves
+    if examples classified, stop recursion
+    evaluate(leaves)
+
+
+GAIN(S,A) = Entropy(S) - SUMv*(|Sv| / |S|) * Entropy(Sv)
+Entropy = -SUMv p(v) / logP(v)
+
+BIAS
+----
+
+inductive bias
+
+Restriction Bias : H (only those that can represented by decision tree)
+Preference Bias  : h element of H
+    ID3 prefers decision trees with good splits near top
+        prefers correct splits over incorrect splits
+        prefers shorter trees to longer trees
+
+
+Other Considerations
+--------------------
+
+continuous inputs ? : age,weight, etc
+    convert to discrete categories
+    transform data to categories
+    attribute may be repeated in the tree
+
+When to Stop?
+-------------
+everything classified correctly
+no more attributes to test
+avoid overfitting
+limit depth of tree
+cross validation error
+PRUNING using cross validation
+
+Regression by Decision Tree
+---------------------------
+splitting criteria
+variance
+output mean, local linear fit
+voting
+
+
+WRAPUP
+-------
+Representation
+ID3 : top down learning algorithm
+Expressiveness of DTs
+Bias of DTs
+Best attributes : information GAIN(S,A)
+Overfitting
+
+
