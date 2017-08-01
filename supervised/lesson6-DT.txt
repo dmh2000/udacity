@@ -1,0 +1,56 @@
+DECISION TREES
+
+linearly separable data
+    a single line can separate the data
+VM have kernel trick
+decision trees can ask multiple linear questions
+
+TERMS
+linearly separable
+axis parallel decision lines
+decision surface
+decision boundary
+
+hyperparameters
+
+min_sample_split
+clf1 = tree.DecisionTreeClassifier(min_samples_split=50)
+clf1.fit(features_train,labels_train)
+acc_min_samples_split_50 = clf1.score(features_test,labels_test)
+
+clf2 = tree.DecisionTreeClassifier(min_samples_split=2)
+clf2.fit(features_train,labels_train)
+acc_min_samples_split_2 = clf2.score(features_test,labels_test)
+
+
+DATA IMPURITY AND ENTROPY
+--------------------------
+
+entropy = measure of impurity in set of samples
+    measure of homogeneity in the sample set
+
+entropy =  SUMi -> -Pi * log2(Pi)
+    Pi = fraction of examples in a given class
+    (log2 of a fraction will be negative)
+    sum over all available classes
+    all examples of same class = 0 (no disorder)
+    examples are evenly split  = 1 (complete disorder)
+
+
+INFORMATION GAIN
+----------------
+
+GAIN = entropy(parent) - [weighted average] * entropy(children)
+
+decision tree attemps to maximize GAIN
+
+BIAS VS VARIANCE
+-----------------
+a high bias model has no capability to learn, ignores data
+    always does the same thing
+a high variance model can only replicate what its seen before
+    performs poorly in new situation
+
+Decision trees are prone to overfit
+
+
