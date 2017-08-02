@@ -1,0 +1,98 @@
+NEURAL NETS
+
+Perceptron
+weighted inputs -> linear sum -> threshold -> output
+
+perceptrons always computes hyperplanes
+perceptrons are linear
+
+AND, OR, NOT are expressible as perceptrons
+
+TRAINING
+
+linearly separable : a half-plane that separates positive from negative
+                     separates positive from negative by a line
+
+perceptron rule -> threshold
+
+    bias -> threshold trick -> constant weight as an input
+    makes output comparison always to 0 instead of some other value
+    while error > E:
+        Wi = Wi + dWi
+        dWi = rate * (Ytarget- Yout)* Xi
+
+
+    if data is linearly separable    , perceptron rule will find the line
+                                       in finite iterations
+    if data is not linearly separable,
+
+gradient descent (delta rule) -> unthresholded
+
+    better for data that is not linearly separable
+    a = sum(Xi,Wi)
+    E(W) = 1/2 sum( (y-a)^2)
+               over all data
+
+    derivative of error = partial derivative for all Wi * error measure
+
+    derivative of error = sum (y-a)(-Xi)
+                          for all {x,y}
+    moves weight in direction of derivative by the 'activation'
+    converges to a local optimum
+
+    y - yhat is not differentiable, its a step function, discontinuous
+    a - activation function, differentiable
+
+    activation function = sigmoid function or hyperbolic tangent
+    derivative of sigmoid function is a S(a)(1-S(a))
+
+    OUTPUT OF NODE IS SIGMOID FUNCTION OF WEIGHTED SUM
+    mapping from input to output is differentiable
+
+    Backpropagation
+        computationally beneficial organization of chain rule
+        inputs -> outputs
+        errors flow back from outputs -> inputs
+
+    gradient descent can stop at local minimum
+
+    advanced methods of optimization
+        momentum terms
+        randomized
+        penalty for complexity (number of nodes and layers -> overfitting)
+
+
+RESTRICTION BIAS
+    representational power of data structure
+    set of hypotheses willing to consider
+    for neural nets
+        perceptrons are linear, only consider planes
+        sigmoids : much more complex
+        not much restriction
+        Boolean functions    : network of threshold like units
+        Continuous functions : single hidden layer with enough units
+        Arbitrary functions  : two hidden layers allows jumps
+
+    So Neural nets are not very restrictive which means overfitting is a danger
+        bound number of hidden layers and units
+        specific architecture is a restriction
+        use cross validation to decide how many hidden layers or nodes, when to stop
+
+
+PREFERENCE BIAS
+    something about algorithm
+    why prefer one implementation over another
+        gradient descent
+        initial weights <- small random values can avoid local minima
+                           variability in retrys
+                           big weights allow arbitrarily complex functions
+                           small values = low complexity
+        prefer correct over incorrect and prefer smaller simpler over complex
+        Occam's Razor
+
+Summary
+    perceptrons - linear threshold unit, any boolean function
+    perceptron rule -> linearly separable -> finite
+    general differentiable rule s-> back propagation and gradient descent
+    preference and restriction bias
+
