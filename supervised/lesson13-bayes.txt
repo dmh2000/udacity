@@ -1,0 +1,132 @@
+Bayesian learning
+
+Learn the best hypothesis given data and some domain knowledge
+
+Learn the most PROBABLE H given data and domain knowledge
+
+Probability(H given D)
+argmax L{H} ->  P(H | D)
+
+
+Bayes Rule
+----------
+
+P(H | D) = P(D | H) * P(H)  (probability of D and H together)
+          ---------------
+             P(D)           (normalizer)
+
+chain rule
+----------
+order doesn't matter
+P(a and b) = P(a|b)P(a)
+P(a and b) = P(b|a)P(b)
+
+solving for Pr(b|a)
+P(b|a) = P(a|b)P(a)
+         ---------
+           P(b)
+
+
+P(H|D) = P(D|H)P(H)
+         ---------
+           P(D)
+P(D)   -> prior belief of the data
+P(D|H) -> probability of data given the hypothesis
+P(H)   -> probability of the hypothesis
+
+D is training data = {(Xi,di)} Xi is feature, di is label
+
+Step 1 : determine the probabilities of each di over the training data
+
+P(h) -> domain knowledge
+
+ALGORITHM
+---------
+
+for each h {H}
+    calculate P(h|D) ~= P(D|h) P(h) # don't need for learning / P(D)
+h = argmax(P(h|D))
+
+MAP = maximum a posteriori
+
+skip P(h). assume any given hypothesis is equally likely
+P(h) is a constant
+just compute h = argmax(P(D|h)
+
+given no apriori hypothesis
+compute hypothesis that best matches the data
+P(h) is not practical given unlimited number of hyptheses
+
+=======================================
+1. Given {<Xi,di>} as noise free examples of C
+2. C -> {H}
+3. uniform prior
+
+version space -> set of h that is consistent with the data
+
+P(h|D) = P(D|h) P(h)
+         -----------
+            P(D)
+
+P(h)   = 1.0 / |H|
+P(D|h) = { 1 if di = h(xi) for all training data [proportion of di = h(xi)]
+         { 0 otherwise
+P(D)   = |VS| / |H|
+P(h|D) = (1 * 1/{H}) / (|VS|/|HS|) - 1 / |VS|
+
+ALGORITHM FOR FINITE H SPACE IN NON NOISY DATA
+    test each H until one is found that is in the version space (consistent with the data)
+
+
+assumptions
+    there is a true deterministic function
+    data is corrupted by gaussian noise
+    <xi,di>
+    di = f(xi) + Ei
+    Ei ~N(0,sigma^2)
+
+max likely h = argmax(P(h|D))
+             = argmax(P(D|h))
+
+goal is to find f(x)
+
+noise is gaussian
+write out the gaussian equation and simplify
+ends up as sum of squared error
+
+
+Minimum description length
+event w probability P has length / -lg(P)
+
+length(D|h) + length(h) # information theory
+               'size'
+
+example : length(h)   = size of decision tree
+          length(D|h) = miscalculation
+
+          minimum hypothesis that minimizes the error
+          Occam's Razor
+          aka Minimum Description Length
+
+
+Ockham -> Bayes -> Shannon
+
+
+finding best LABEL : weighted vote h element of {H}, P(h|D)
+
+Summary
+-------
+
+Bayes Rule : swap causes vs efffects
+    P(h|D) ~= P(D|h) P(h)
+
+priors matter
+
+hmap, hml
+    map when prior is uniform
+
+derived rules : minimize sum of squared errors
+                minimum description length
+
+classification
+    voting on hypothesis ~ Bayes Optimal Classifier

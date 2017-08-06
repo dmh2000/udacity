@@ -1,0 +1,71 @@
+NAIVE BAYES
+-----------
+
+cancer test
+
+test : 90% positive if you have C       (sensitivity) -> CP
+       90% negative if you don't have C (specifivity) -> CN
+
+ 1% have cancer
+99% don't have cancer
+
+prior probabiliy * test evidence = posterior probability
+
+PRIOR
+-----
+P(C) = 0.01
+P(NC) = 0.99
+P(Pos | C) = 0.90
+P(Neg | C) = 0.90
+P(Pos |NC) = 0.10
+
+JOINT
+-----
+P(C , Pos)  = P(C)  * P(Pos | C)
+    0.01 * 0.90 = .009
+P(NC , Pos) = P(NC) *  P(Pos | NC)
+    0.99 * 0.10 = 0.099
+
+NORMALIZE
+---------
+P(Pos) = P(C | Pos) + P(NC | Pos)
+    0.009 + 0.099 = 0.108
+
+POSTERIOR
+---------
+
+P(C | POS) = P(C, Pos) / P(Pos)
+P(NC | POS) = P(NC,Pos) / P(pos)
+
+
+=============================================
+P(C) : prior
+P(Pos | C) sensitivity
+P(Neg | NC) specificity
+
+joint
+-----
+              prior * sensitivity
+P(Pos , C)  = P(C) * P(Pos | C)
+              prior * specificity
+P(Neg ,NC)  = P(C) * P(Pos | NC)
+
+normalizer
+----------
+P(Pos) = P(Pos,C) + P(Neg, NC)
+
+posterior
+---------
+P(Pos, C) / P(Pos) = P(C | Pos)  cancer if positive
+P(Pos,NC) / P(Pos) = P(NC | Pos) not cancer if positive
+
+P(C | P) = P(C) | P(Pos | C)
+           ------------------
+               p(Pos)
+
+
+
+TEXT LEARNING
+-------------
+
+Naive Bayes
