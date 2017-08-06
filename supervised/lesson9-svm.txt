@@ -1,0 +1,112 @@
+Support Vector Machines
+
+find line equally distant from both classes of points
+
+y = mx + b
+
+linear hyperplane equation
+y = wx + b
+    y is classification separator, += in class, - = not in class
+    w is parameters of the plane
+    b moves in and out of origin
+
+decision boundary
+    hyperplane between classifications of data
+    as far from each class as possible
+
+y at decision boundary == 0
+y = WtX + b
+Wt * X + b =0
+y -> {-1,1}
+
+line close to one class  , y = 1
+line close to other class, y = -1
+
+Wt * X + b =  1  (1)
+Wt * X + b =  0  (2)
+Wt * X + b = -1  (3)
+
+distance from (1) to (3) is maximal
+
+X1,X2 are points on the line at maximal distance
+WtX1 + b =  1
+WtX2 + b = -1
+
+MARGIN
+
+find decision boundary that maximizes the margin
+
+Wt(x1-x2) = 2 / ||w||
+---------
+||w||
+
+
+maximize 2 / ||w||   (||w|| is length of hyperplane)
+    while classifying everything correctly
+
+Yi * (WXi + b) >= 1
+Yi -> {-1,1}
+
+solving equivalent problem
+
+minimize 1/2 ||w||^2
+
+this is a quadratic programming problem
+always has a solution
+there are known techniques for solving this problem
+
+Other people know how to do it and they have written the code for us
+--------------------------------------------------------------------
+
+w = sum (Alphai Yi Xi) > b
+Alphai's are mostly 0 so some vectors matter, others don't
+vectors with nonzero alpha's are the ***support vectors***
+OR
+only a few of the x's matter
+points far away from decision boundary don't matter
+like k-nearest-neighbor
+
+find all pairs of points, figure out which ones matter
+then determine how they are similar to each other
+
+Kernel Trick
+----------------
+if not linearly separable, projects into higher
+dimensional space
+
+K(Xi,Xj) function that adds a dimension without adding information
+
+provides a notion of similarity ('distance' between xi,xj)
+domain knowledge
+RBF  -> radial basis kernel (see wikipedia) uses e^(something), sort of Gaussian
+Poly -> (Xt + C) ^ p
+
+'distance' means similarity, not even necessarily mathematical
+
+Mercer Condition
+
+SUMMARY
+
+maximize margin, generalization vs overfitting
+optimization problem for finding max margins
+support vectors are the vectors that matter to the optimization
+kernel trick : project into higher dimensional space
+               XtY -> K(x,y)
+               domain knowledge
+               Mercer condition
+
+BOOSTING:
+
+
+
+
+
+
+
+
+
+
+
+
+
+

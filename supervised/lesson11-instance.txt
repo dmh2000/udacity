@@ -1,0 +1,65 @@
+INSTANCE BASED LEARNING
+-----------------------
+
+
+KNN - k nearest neighbors
+
+remembers exact features
+fast - no long learning time
+simple
+large data store
+no generalization
+overfit prone (stores noise)
+
+Parameters
+K - number of neighbors
+measure of similarity/distance
+
+Given
+Training data        {Xi,Yi}
+distance metric      d(q,X)
+number of neighbors  K
+query point          q
+
+find K neighbors closest to the query point
+NN = {i : d(qi,xi) K smallest}
+
+if more than K equal data points, take all of them
+
+classification
+    vote based on K labels
+    weighted vote
+    Yi most frequent in K set, take plurality (mode)
+    ties? pick one
+
+regression
+    mean of K points
+    mean weighted by similarity 1/d()
+
+Eager vs Lazy
+KNN is a lazy learner  (do the work in the query phase)
+LR is an eager learner (do the work in the learning phase)
+
+
+KNN Preference Bias
+    why prefer one hypothesis over another
+    locality - near points are similar
+    smoothness -averaging
+    all features equal weight
+
+Bellman's Curse of Dimensionality O(2^d)
+-----------------------
+as the number of features/dimensions grows, the
+amount of dta needed to generalize accurately grows
+EXPONENTIALLY
+
+
+choice of Distance Metrics is important
+    euclidian, manhattan, weighted
+    discrete, mismatches
+    weighted average
+    locally weighted regression
+
+
+
+

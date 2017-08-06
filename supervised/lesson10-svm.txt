@@ -1,0 +1,34 @@
+SUPPORT VECTOR MACHINES
+
+invented by Vapnik
+
+Maximizes margin : distance between classes to nearest point(s)
+                   without making a classification error
+
+SVM's can tolerate outliers
+
+creates line/plane/hyperplanes
+
+hyperparameters:
+
+kernel
+
+C     : penalty parameters controls tradeoff between smooth
+        decision boundary vs correct classification
+    The C parameter trades off misclassification of training examples
+    against simplicity of the decision surface. A low C makes the
+    decision surface smooth, while a high C aims at classifying
+    all training examples correctly by giving the model freedom
+    to select more samples as support vectors.
+
+gamma : kernel coefficient
+    determines how much influence a single training example has
+    low value   : uses points farther from the boundary -> smooth
+    high values : uses points close to the boundary     -> wiggly
+    for high values of gamma, you get a complex decision boundary (overfitting)
+
+
+Kernel, C , Gamma influence overfitting
+use gridsearchcv to tune
+
+
