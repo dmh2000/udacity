@@ -1,0 +1,113 @@
+Bayesian Inference
+
+Joint Distribution
+4 possibilities
+A  B  Probability (particular time and place)
+T  T  0.25
+T  F  0.40
+F  T  0.05
+F  F  0.30
+
+P(not A)
+P(B | A ) P(A | B) / (P(A and B) + P(A not B)
+P(B | ^A) P(^A | B) / (P(^A and B) + P(^A not B)
+
+A = storm B = lightning
+P(B | A)  = 0.25 / (0.25 + 0.40) = 0.25 / 0.65
+P(B | ^A) = 0.05 / (0.05 + 0.30) = 0.05 / 0.35
+
+A = lightning B = thunder
+P(B | A)  = 0.30 / (0.30 + 0.40) = 0.25 / 0.65
+P(B | ^A) = 0.05 / (0.05 + 0.30) = 0.05 / 0.35
+
+
+X is conditionally independent of [y given z] if the probability distribution governing X
+is independent of the value of [Y given the value of Z]
+
+conditional independence
+P(X|Y, Z) = P(X | Z)
+
+normal independence
+P(X|Y) = P(X)
+
+
+bayesian network / bayes net / graphical model
+
+storm -> lightning -> thunder
+
+P(S)
+ |
+ + P(L|S) P(L|^S)
+ |
+ + P(T|L) P(T|^L)
+S  L
+T  T 0.25 T .20   .20 / .25 (1)
+T  T 0.25 F .05
+T  F 0.40 T .04
+T  F 0.40 F .36
+F  T 0.05 T .04   .04 / .05 (1)
+F  T 0.05 F .01
+F  F 0.30 T .03
+F  F 0.30 F .27
+
+    L     Th
+T   0.30  T .20 + .04  .24/.30 = 0.8 (1)
+T   0.30  F .05 + .01  .25/.30 = 0.2
+F   0.70  T .04 + .03  .07/.70 = 0.1
+F   0.70  F .36 + .27  .63/.70 = 0.9
+
+
+Sampling from joint distribution
+
+order of sampling is topological
+graph must be acyclic
+
+a bayes net must be an ordered acyclic graph
+
+if all variables have an assigned value,
+joint probability is the product of the individual probabilities
+
+for the given graph
+P(A,B,C,D,E) = P(A)P(B)P(C|AB)P(D|BC)P(E|CD)
+
+things distributions are for:
+    probability of values
+    generating values
+
+- simulation of a complex process
+- approximate inference -machine
+- visualization         -human
+
+approximate because exact answers are hard
+
+
+INFERENCING RULES
+-----------------
+
+P(x,y) means P(x and y)
+P(x|y) means P(x given y)
+
+marginalization
+    P(X| = sum(y)(P(x,y)
+
+chain rule
+P(x,y) = P(x)P(y|x) = P(y)P(x|y)
+
+bayes rules
+P(y|x) = P(x | y) P(y)
+         -------------
+             p(x) (joint probability)
+
+Naive Bayes
+-----------
+inference is cheap
+few parameters
+estimate paraemters with labeled data (sum of frequency counts for each label  / number of labels)
+connects inference and classification
+empirically successful
+assumes all attributes are conditionally independent (word order not used)
+requires a lot of data
+one attribute in input that hasn't been labeled zero's out the sum
+    smooth out by set all attributes to a small nonzero value
+    creates inductive bias
+naive bayes is tractable to compute
