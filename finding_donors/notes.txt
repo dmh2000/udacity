@@ -4,17 +4,24 @@ Accuracy measures how often the
 classifier makes the correct prediction. It’s the ratio of the number of correct
 predictions to the total number of predictions (the number of test data points).
 
+Accuracy = True Positives / total predictions
+
 Recall(sensitivity) tells us what proportion of messages that actually were spam
 were classified by us as spam. It is a ratio of true positives(words classified
 as spam, and which are actually spam) to all the words that were actually spam,
-in other words it is the ratio of [True Positives/(True Positives + False
-Negatives)]
+in other words it is the ratio of
+
+Recall = [True Positives/(True Positives + False Negatives)]
+
+
 
 Precision tells us what proportion of messages we classified as spam, actually
 were spam. It is a ratio of true positives(words classified as spam, and which
 are actually spam) to all positives(all words classified as spam, irrespective
 of whether that was the correct classification, in other words it is the ratio
-of [True Positives/(True Positives + False Positives)]
+of
+
+Precision = [True Positives/(True Positives + False Positives)]
 
 For classification problems that are skewed in their classification
 distributions like in our case, for example if we had a 100 text messages and
@@ -26,21 +33,3 @@ such cases, precision and recall come in very handy. These two metrics can be
 combined to get the F1 score, which is weighted average(harmonic mean) of the
 precision and recall scores. This score can range from 0 to 1, with 1 being the
 best possible F1 score(we take the harmonic mean as we are dealing with ratios).
-
-1. Decision Tree
- - real world : Troubleshooting failures in complex machines. In a complex machine such as an aircraft engine it can be difficult to figure out what is causing a failure. The advantage of a decision tree is that in addition to sensors integrated into the device, it would be practical to include input from experienced maintenance personnel who can specify how they isolate a fault. Those observations can then be added as features to the data.
- - strengths  : prediction is efficient, tree traversal is logarithmic. easy to visualize. makes good powerpoint slides. Works well with large data sets, (if overfitting conditions are avoided).
- - weaknesses : tree construction in general is NP Complete. Decision trees with large depth or many features are prone to overfitting
- - suitability: It will be easier to explain the resulting decision tree as opposed to an algorithm that is more 'magic'.
-
-2. Support Vector Machine
- - real world : fault diagnosis in power transmission system http://ieeexplore.ieee.org/document/4436112/  An interesting feature of this application is that both an SVM classifier and an SVM regressor are used in combination to solve the problem of isolating faults in a power network. The classifier attempts to decide what is wrong, and the regressor tries to locate it geographically.
- - strengths  :
- - weaknesses :
- - suitability:
-
-2. AdaBoost
- - real world : Realtime tracking of football players in a game. Adaboost seems to be widely used for image and object recognition. It should be relatively easy to discriminate the players for each team and the referees from other things on a field, especially since football and soccer don't have much else on the field besides the players, refs and a ball and the teams and refs have different colors.. Then the challenge would be to identify individual players, maybe numbers, size and in the case of football, position on the field before a play starts. Face recognition would be difficult although players do have individual features on their helmets. Real time tracking in professional football is already done using sensors that actually identify individual player position, but that approach requires special hardware. I heard a presentation describing how they do that in pro football. I asked if the cost was feasible for college teams, and the answer was that the infrastructure was expensive so only the best financed teams could use it. So the possibility of using image recognition from existing camera feeds would be attractive.
- - strengths  : can use improve other learning algorithms. Sklearn defaults to decision trees but allows use of any suitable classifier.  Works well even if the 'weak learners' aren't that good. as long as they are better than chance. Not as affected by dimensionality as some other classifiers. The resulting prediction process can be efficient because adaboost disregards irrelevant features, simplifying the computation of a prediction.
- - weaknesses : weak when there is noise and outliers (per the lecture, can't handle pink noise)
- - suitability: best for this application, because we can try different classifiers and it just tends to improve their predictions

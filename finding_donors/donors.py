@@ -43,6 +43,7 @@ print "Individuals making at most $50,000: {}".format(n_at_most_50k)
 print "Percentage of individuals making more than $50,000: {:.2f}%".format(greater_percent)
 
 # ======================================================================================
+# ======================================================================================
 # Split the data into features and target label
 income_raw = data['income']
 features_raw = data.drop('income', axis=1)
@@ -51,6 +52,7 @@ features_raw = data.drop('income', axis=1)
 vs.distribution(data)
 
 # ======================================================================================
+# ======================================================================================
 # Log-transform the skewed features
 skewed = ['capital-gain', 'capital-loss']
 features_log_transformed = pd.DataFrame(data=features_raw)
@@ -58,6 +60,7 @@ features_log_transformed[skewed] = features_raw[skewed].apply(lambda x: np.log(x
 
 # Visualize the new log distributions
 vs.distribution(features_log_transformed, transformed=True)
+# ======================================================================================
 # ======================================================================================
 # Import sklearn.preprocessing.StandardScaler
 from sklearn.preprocessing import MinMaxScaler
@@ -72,39 +75,43 @@ features_log_minmax_transform[numerical] = scaler.fit_transform(features_log_tra
 # Show an example of a record with scaling applied
 display(features_log_minmax_transform.head(n=5))
 # ======================================================================================
+# ======================================================================================
 
 # One-hot encode the 'features_log_minmax_transform' data using pandas.get_dummies()
 
 # Adds
+# it's easier for me to see results if I perform each transform individually
 workcls = pd.get_dummies(features_log_minmax_transform["workclass"])
 edlevel = pd.get_dummies(features_log_minmax_transform["education_level"])
 mstatus = pd.get_dummies(features_log_minmax_transform["marital-status"])
-occup   = pd.get_dummies(features_log_minmax_transform["occupation"])
-relat   = pd.get_dummies(features_log_minmax_transform["relationship"])
-race    = pd.get_dummies(features_log_minmax_transform["race"])
-sex     = pd.get_dummies(features_log_minmax_transform["sex"])
+occup = pd.get_dummies(features_log_minmax_transform["occupation"])
+relat = pd.get_dummies(features_log_minmax_transform["relationship"])
+race = pd.get_dummies(features_log_minmax_transform["race"])
+sex = pd.get_dummies(features_log_minmax_transform["sex"])
 country = pd.get_dummies(features_log_minmax_transform["native-country"])
 
 # Drops
-drops = ["workclass", "education_level", "marital-status", "occupation", "relationship", "race", "sex","native-country"]
+drops = ["workclass", "education_level", "marital-status", "occupation", "relationship", "race", "sex",
+         "native-country"]
 
-# adds
-adds = [workcls,edlevel,mstatus,occup,relat,race,sex,country]
+# Adds
+adds = [workcls, edlevel, mstatus, occup, relat, race, sex, country]
 
-encoded = list(features_log_minmax_transform.columns)
-print "{} total features before drops.".format(len(encoded))
+# just checking, should be 13
+# encoded = list(features_log_minmax_transform.columns)
+# print "{} total features before drops.".format(len(encoded))
 
-# drop
+# drop : this worked using a vector
 features_final = features_log_minmax_transform.drop(drops, axis=1)
-encoded = list(features_final.columns)
-print "{} total features after drops.".format(len(encoded))
 
-# add
+# just checking, should be 5
+# encoded = list(features_final.columns)
+# print "{} total features before adds.".format(len(encoded))
+
+# add the resulting dummy features
+adds = [workcls, edlevel, mstatus, occup, relat, race, sex, country]
 for a in adds:
-    features_final = features_final.add(a, axis=1)
-
-encoded = list(features_final.columns)
-print "{} total features after adds.".format(len(encoded))
+    features_final = pd.concat([features_final, a], axis=1)
 
 # Encode the 'income_raw' data to numerical values
 income = pd.Series(np.where(income_raw == "<=50K", 0, 1))
@@ -115,8 +122,24 @@ print "{} total features after one-hot encoding.".format(len(encoded))
 
 # Uncomment the following line to see the encoded feature names
 # print encoded
-
 # ======================================================================================
+# ======================================================================================
+
+# Import train_test_split
+# updated sklearn to remove deprecation warning
+from sklearn.model_selection import train_test_split
+
+# Split the 'features' and 'income' data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(features_final,
+                                                    income,
+                                                    test_size = 0.2,
+                                                    random_state = 0)
+
+# Show the results of the split
+print "Training set has {} samples.".format(X_train.shape[0])
+print "Testing set has {} samples.".format(X_test.shape[0])
+# ======================================================================================
+
 '''
 TP = np.sum(income) # Counting the ones as this is the naive case. Note that 'income' is the 'income_raw' data 
 encoded to numerical values done in the data preprocessing step.
@@ -126,7 +149,6 @@ TN = 0 # No predicted negatives in the naive case
 FN = 0 # No predicted negatives in the naive case
 '''
 # Calculate accuracy, precision and recall
-#from sklearn.metrics import accuracy_score,recall_score,precision_score,fbeta_score
 
 total    = float(income.count()) # 45222
 tp       = float(np.sum(income)) # 11208 (predicted positives that are positive)
@@ -154,6 +176,131 @@ fscore = (1.0 + beta2) * (precision * recall) / ((beta2 * precision) + recall)
 
 # Print the results
 print "Naive Predictor: [Accuracy score: {:.4f}, F-score: {:.4f}]".format(accuracy, fscore)
+# ======================================================================================
+# ======================================================================================
 
+# Import two metrics from sklearn - fbeta_score and accuracy_score
+from sklearn.metrics import accuracy_score, fbeta_score
 
+def train_predict(learner, sample_size, X_train, y_train, X_test, y_test):
+    '''
+    inputs:
+       - learner: the learning algorithm to be trained and predicted on
+       - sample_size: the size of samples (number) to be drawn from training set
+       - X_train: features training set
+       - y_train: income training set
+       - X_test: features testing set
+       - y_test: income testing set
+    '''
+
+    results = {}
+
+    # Fit the learner to the training data using slicing with 'sample_size' using .fit(training_features[:], training_labels[:])
+    start = time()  # Get start time
+    X = X_train[0:sample_size]
+    y = y_train[0:sample_size]
+    learner.fit(X_train[0:sample_size], y_train[0:sample_size])
+    end = time()  # Get end time
+
+    # Calculate the training time
+    results['train_time'] = end - start
+
+    # Get the predictions on the test set(X_test),
+    #       then get predictions on the first 300 training samples(X_train) using .predict()
+    start = time()  # Get start time
+    predictions_test  = learner.predict(X_test)
+    predictions_train = learner.predict(X_train[0:300])
+    end = time()  # Get end time
+
+    # Calculate the total prediction time
+    results['pred_time'] = end - start
+
+    # Compute accuracy on the first 300 training samples which is y_train[:300]
+    results['acc_train'] = accuracy_score(y_train[0:300],predictions_train)
+
+    # TODO: Compute accuracy on test set using accuracy_score()
+    results['acc_test'] = accuracy_score(y_test, predictions_test)
+
+    # TODO: Compute F-score on the the first 300 training samples using fbeta_score()
+    results['f_train'] = fbeta_score(y_train[0:300],predictions_train,0.5)
+
+    # TODO: Compute F-score on the test set which is y_test
+    results['f_test'] = fbeta_score(y_test,predictions_test, 0.5)
+
+    # Success
+    print "{} trained on {} samples.".format(learner.__class__.__name__, sample_size)
+
+    # Return the results
+    return results
+
+# ======================================================================================
+# ======================================================================================
+# Import the three supervised learning models from sklearn
+from sklearn.tree        import DecisionTreeClassifier
+from sklearn.ensemble    import AdaBoostClassifier
+from sklearn.svm         import LinearSVC
+
+# TODO: Initialize the three models
+clf_A = DecisionTreeClassifier(random_state=42)
+clf_B = LinearSVC(random_state=42)
+clf_C = AdaBoostClassifier(random_state=42)
+
+# TODO: Calculate the number of samples for 1%, 10%, and 100% of the training data
+# HINT: samples_100 is the entire training set i.e. len(y_train)
+# HINT: samples_10 is 10% of samples_100
+# HINT: samples_1 is 1% of samples_100
+samples_100 = y_train.count()
+samples_10 =  samples_100 / 10
+samples_1  =  samples_10  / 10
+
+# Collect results on the learners
+results = {}
+for clf in [clf_A, clf_B, clf_C]:
+    clf_name = clf.__class__.__name__
+    results[clf_name] = {}
+    for i, samples in enumerate([samples_1, samples_10, samples_100]):
+        results[clf_name][i] = \
+        train_predict(clf, samples, X_train, y_train, X_test, y_test)
+
+# Run metrics visualization for the three supervised learning models chosen
+vs.evaluate(results, accuracy, fscore)
+# ======================================================================================
+# ======================================================================================
+# TODO: Import 'GridSearchCV', 'make_scorer', and any other necessary libraries
+from sklearn.ensemble    import AdaBoostClassifier
+from sklearn.model_selection import GridSearchCV
+from sklearn.metrics         import make_scorer
+
+# TODO: Initialize the classifier
+clf = AdaBoostClassifier()
+
+# TODO: Create the parameters list you wish to tune, using a dictionary if needed.
+# HINT: parameters = {'parameter_1': [value1, value2], 'parameter_2': [value1, value2]}
+parameters = {'base_estimator':[DecisionTreeClassifier, LinearSVC],'n_estimators':[10,50,100],'learning_rate':[0.1,1.0,10.0]}
+
+# TODO: Make an fbeta_score scoring object using make_scorer()
+scorer = make_scorer(fbeta_score, beta=0.5)
+
+# TODO: Perform grid search on the classifier using 'scorer' as the scoring method using GridSearchCV()
+grid_obj = GridSearchCV()
+
+# TODO: Fit the grid search object to the training data and find the optimal parameters using fit()
+grid_fit = None
+
+# Get the estimator
+best_clf = grid_fit.best_estimator_
+
+# Make predictions using the unoptimized and model
+predictions = (clf.fit(X_train, y_train)).predict(X_test)
+best_predictions = best_clf.predict(X_test)
+
+# Report the before-and-afterscores
+print "Unoptimized model\n------"
+print "Accuracy score on testing data: {:.4f}".format(accuracy_score(y_test, predictions))
+print "F-score on testing data: {:.4f}".format(fbeta_score(y_test, predictions, beta = 0.5))
+print "\nOptimized Model\n------"
+print "Final accuracy score on the testing data: {:.4f}".format(accuracy_score(y_test, best_predictions))
+print "Final F-score on the testing data: {:.4f}".format(fbeta_score(y_test, best_predictions, beta = 0.5))
+# ======================================================================================
+# ======================================================================================
 pl.show()
