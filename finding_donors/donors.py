@@ -8,7 +8,9 @@ import matplotlib.pyplot as pl
 import visuals as vs
 
 # Pretty display for notebooks
-import matplotlib
+import matplotlib as plt
+
+plt.interactive(False)
 
 # Load the Census dataset
 data = pd.read_csv("census.csv")
@@ -132,8 +134,8 @@ from sklearn.model_selection import train_test_split
 # Split the 'features' and 'income' data into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(features_final,
                                                     income,
-                                                    test_size = 0.2,
-                                                    random_state = 0)
+                                                    test_size=0.2,
+                                                    random_state=0)
 
 # Show the results of the split
 print "Training set has {} samples.".format(X_train.shape[0])
@@ -150,19 +152,19 @@ FN = 0 # No predicted negatives in the naive case
 '''
 # Calculate accuracy, precision and recall
 
-total    = float(income.count()) # 45222
-tp       = float(np.sum(income)) # 11208 (predicted positives that are positive)
-fp       = total - tp            # 34014 (predicted positives that are negative)
-tn       = 0.0                   # 0     (predicted negatives that are negative)
-fn       = 0.0                   # 0     (predicted negatives that are positive)
+total = float(income.count())  # 45222
+tp = float(np.sum(income))  # 11208 (predicted positives that are positive)
+fp = total - tp  # 34014 (predicted positives that are negative)
+tn = 0.0  # 0     (predicted negatives that are negative)
+fn = 0.0  # 0     (predicted negatives that are positive)
 
 # print total,tp,fp,tn,fn
 
 # accuracy = true positive / total
-accuracy  = tp / total
+accuracy = tp / total
 
 # recall = true_positive / (true_positive + false_negatives)
-recall    = tp / (tp + fn)
+recall = tp / (tp + fn)
 
 # precision = true_positive / (true_positive + false_positives)
 precision = tp / (tp + fp)
@@ -181,6 +183,7 @@ print "Naive Predictor: [Accuracy score: {:.4f}, F-score: {:.4f}]".format(accura
 
 # Import two metrics from sklearn - fbeta_score and accuracy_score
 from sklearn.metrics import accuracy_score, fbeta_score
+
 
 def train_predict(learner, sample_size, X_train, y_train, X_test, y_test):
     '''
@@ -208,7 +211,7 @@ def train_predict(learner, sample_size, X_train, y_train, X_test, y_test):
     # Get the predictions on the test set(X_test),
     #       then get predictions on the first 300 training samples(X_train) using .predict()
     start = time()  # Get start time
-    predictions_test  = learner.predict(X_test)
+    predictions_test = learner.predict(X_test)
     predictions_train = learner.predict(X_train[0:300])
     end = time()  # Get end time
 
@@ -216,16 +219,16 @@ def train_predict(learner, sample_size, X_train, y_train, X_test, y_test):
     results['pred_time'] = end - start
 
     # Compute accuracy on the first 300 training samples which is y_train[:300]
-    results['acc_train'] = accuracy_score(y_train[0:300],predictions_train)
+    results['acc_train'] = accuracy_score(y_train[0:300], predictions_train)
 
     # TODO: Compute accuracy on test set using accuracy_score()
     results['acc_test'] = accuracy_score(y_test, predictions_test)
 
     # TODO: Compute F-score on the the first 300 training samples using fbeta_score()
-    results['f_train'] = fbeta_score(y_train[0:300],predictions_train,0.5)
+    results['f_train'] = fbeta_score(y_train[0:300], predictions_train, 0.5)
 
     # TODO: Compute F-score on the test set which is y_test
-    results['f_test'] = fbeta_score(y_test,predictions_test, 0.5)
+    results['f_test'] = fbeta_score(y_test, predictions_test, 0.5)
 
     # Success
     print "{} trained on {} samples.".format(learner.__class__.__name__, sample_size)
@@ -233,25 +236,26 @@ def train_predict(learner, sample_size, X_train, y_train, X_test, y_test):
     # Return the results
     return results
 
+
 # ======================================================================================
 # ======================================================================================
 # Import the three supervised learning models from sklearn
-from sklearn.tree        import DecisionTreeClassifier
-from sklearn.ensemble    import AdaBoostClassifier
-from sklearn.svm         import LinearSVC
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.svm import LinearSVC
 
-# TODO: Initialize the three models
-clf_A = DecisionTreeClassifier(random_state=42)
-clf_B = LinearSVC(random_state=42)
-clf_C = AdaBoostClassifier(random_state=42)
+# Initialize the three models
+clf_A = DecisionTreeClassifier(random_state=0)
+clf_B = LinearSVC(random_state=0)
+clf_C = AdaBoostClassifier(random_state=0)
 
-# TODO: Calculate the number of samples for 1%, 10%, and 100% of the training data
+# Calculate the number of samples for 1%, 10%, and 100% of the training data
 # HINT: samples_100 is the entire training set i.e. len(y_train)
 # HINT: samples_10 is 10% of samples_100
 # HINT: samples_1 is 1% of samples_100
 samples_100 = y_train.count()
-samples_10 =  samples_100 / 10
-samples_1  =  samples_10  / 10
+samples_10 = samples_100 / 10
+samples_1 = samples_10 / 10
 
 # Collect results on the learners
 results = {}
@@ -260,35 +264,41 @@ for clf in [clf_A, clf_B, clf_C]:
     results[clf_name] = {}
     for i, samples in enumerate([samples_1, samples_10, samples_100]):
         results[clf_name][i] = \
-        train_predict(clf, samples, X_train, y_train, X_test, y_test)
+            train_predict(clf, samples, X_train, y_train, X_test, y_test)
 
 # Run metrics visualization for the three supervised learning models chosen
 vs.evaluate(results, accuracy, fscore)
 # ======================================================================================
 # ======================================================================================
-# TODO: Import 'GridSearchCV', 'make_scorer', and any other necessary libraries
-from sklearn.ensemble    import AdaBoostClassifier
+# Import 'GridSearchCV', 'make_scorer', and any other necessary libraries
+from sklearn.ensemble import AdaBoostClassifier
 from sklearn.model_selection import GridSearchCV
-from sklearn.metrics         import make_scorer
+from sklearn.metrics import make_scorer
 
-# TODO: Initialize the classifier
-clf = AdaBoostClassifier()
+# Initialize the classifier
+clf = DecisionTreeClassifier(random_state=0)
 
-# TODO: Create the parameters list you wish to tune, using a dictionary if needed.
-# HINT: parameters = {'parameter_1': [value1, value2], 'parameter_2': [value1, value2]}
-parameters = {'base_estimator':[DecisionTreeClassifier, LinearSVC],'n_estimators':[10,50,100],'learning_rate':[0.1,1.0,10.0]}
+# Create the parameters list you wish to tune, using a dictionary if needed.
+parameters = {'criterion': ['gini', 'entropy'],
+              'min_samples_split': [2, 10, 20, 30, 40, 50],
+              'max_depth': [4, 8, 12, 16],
+              'min_samples_leaf': [4, 8, 12, 16],
+              'max_features': [25, 50, 75, None]
+              }
 
-# TODO: Make an fbeta_score scoring object using make_scorer()
+# Make an fbeta_score scoring object using make_scorer()
 scorer = make_scorer(fbeta_score, beta=0.5)
 
-# TODO: Perform grid search on the classifier using 'scorer' as the scoring method using GridSearchCV()
-grid_obj = GridSearchCV()
+# Perform grid search on the classifier using 'scorer' as the scoring method using GridSearchCV()
+grid_obj = GridSearchCV(clf, parameters, scoring=scorer)
 
-# TODO: Fit the grid search object to the training data and find the optimal parameters using fit()
-grid_fit = None
+# Fit the grid search object to the training data and find the optimal parameters using fit()
+grid_fit = grid_obj.fit(X_train, y_train)
 
+print "======================================================================================"
 # Get the estimator
 best_clf = grid_fit.best_estimator_
+print best_clf
 
 # Make predictions using the unoptimized and model
 predictions = (clf.fit(X_train, y_train)).predict(X_test)
@@ -297,10 +307,57 @@ best_predictions = best_clf.predict(X_test)
 # Report the before-and-afterscores
 print "Unoptimized model\n------"
 print "Accuracy score on testing data: {:.4f}".format(accuracy_score(y_test, predictions))
-print "F-score on testing data: {:.4f}".format(fbeta_score(y_test, predictions, beta = 0.5))
+print "F-score on testing data: {:.4f}".format(fbeta_score(y_test, predictions, beta=0.5))
 print "\nOptimized Model\n------"
 print "Final accuracy score on the testing data: {:.4f}".format(accuracy_score(y_test, best_predictions))
-print "Final F-score on the testing data: {:.4f}".format(fbeta_score(y_test, best_predictions, beta = 0.5))
+print "Final F-score on the testing data: {:.4f}".format(fbeta_score(y_test, best_predictions, beta=0.5))
+print "======================================================================================"
+
 # ======================================================================================
 # ======================================================================================
-pl.show()
+# Import 'GridSearchCV', 'make_scorer', and any other necessary libraries
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import make_scorer
+
+t0 = time()
+
+# Initialize the classifier
+clf = AdaBoostClassifier(random_state=0)
+
+# Create the parameters list you wish to tune, using a dictionary if needed.
+parameters = {'n_estimators': [100, 200, 500, 1000, 5000],
+              'learning_rate': [0.5, 1.0, 4.0]
+              }
+
+# Make an fbeta_score scoring object using make_scorer()
+scorer = make_scorer(fbeta_score, beta=0.5)
+
+# Perform grid search on the classifier using 'scorer' as the scoring method using GridSearchCV()
+grid_obj = GridSearchCV(clf, parameters, scoring=scorer)
+
+# Fit the grid search object to the training data and find the optimal parameters using fit()
+grid_fit = grid_obj.fit(X_train, y_train)
+
+print "======================================================================================"
+# Get the estimator
+best_clf = grid_fit.best_estimator_
+
+# Make predictions using the unoptimized and model
+predictions = (clf.fit(X_train, y_train)).predict(X_test)
+best_predictions = best_clf.predict(X_test)
+
+t1 = time()
+
+# print "Elapsed Time : " + str(t1 - t0)
+
+# Report the before-and-afterscores
+print "Unoptimized model\n------"
+# print clf
+print "Accuracy score on testing data: {:.4f}".format(accuracy_score(y_test, predictions))
+print "F-score on testing data: {:.4f}".format(fbeta_score(y_test, predictions, beta=0.5))
+print "\nOptimized Model\n------"
+# print best_clf
+print "Final accuracy score on the testing data: {:.4f}".format(accuracy_score(y_test, best_predictions))
+print "Final F-score on the testing data: {:.4f}".format(fbeta_score(y_test, best_predictions, beta=0.5))
+print "======================================================================================"

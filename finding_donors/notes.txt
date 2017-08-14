@@ -33,3 +33,18 @@ such cases, precision and recall come in very handy. These two metrics can be
 combined to get the F1 score, which is weighted average(harmonic mean) of the
 precision and recall scores. This score can range from 0 to 1, with 1 being the
 best possible F1 score(we take the harmonic mean as we are dealing with ratios).
+
+
+
+AdaBoostClassifier(algorithm='SAMME.R', base_estimator=None,
+          learning_rate=0.5, n_estimators=5000, random_state=0)
+Elapsed Time : 1217.39899993
+Unoptimized model
+------
+Accuracy score on testing data: 0.8576
+F-score on testing data: 0.7246
+
+Optimized Model
+------
+Final accuracy score on the testing data: 0.8679
+Final F-score on the testing data: 0.7467
