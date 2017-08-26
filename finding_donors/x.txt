@@ -1,0 +1,7 @@
+Three learning models were selected for evaluation of their prediction ability. They included LinearSVC (Linear Support Vector Classifier),
+ DecisionTreeClassifier and Adaboost Classifier. Each of these models were trained with a subset of the existing data and the results visualized in the
+ above chart. The criteria for selection are runtime and score metrics on the Test data set. There is a significant difference in training and prediction
+ time between the AdaboostClassifier and the other two models. The Adaboost model takes much longer. The score metrics are similar for all three models,
+ with the Adaboost model slightly better than the other two.
+I have selected Adaboost model since its score metrics are best, at a cost of longer time to get the results. However, if over time the training data set
+grows much larger and the time to train and predict becomes excessive, a switch to the LinearSVC model can be used instead at a slight loss in prediction quality but much shorter run time.
