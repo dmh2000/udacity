@@ -1,0 +1,20 @@
+old and new things about unsupervised learning
+
+Popular subjects:
+
+Deep neural networks
+    - deep learning
+    - new techniques for getting signals through multiple layers
+
+
+
+Big data
+    - algorithmic challenges from gigantic datasets. linear is too slow
+    - quadratic is unacceptable
+    - terabytes, petabytes
+
+
+Semi Supervised learning
+
+    - combined
+    -

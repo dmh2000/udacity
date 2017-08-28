@@ -1,0 +1,79 @@
+independent components analysis
+
+PCA
+----
+Principal components analysis
+
+possibly correlated variables -> linearly uncorrelated variables
+maximizes variance
+orders components by maximum variance
+
+finds global features
+
+ICA
+---
+Independent components analysis
+
+separate combined source signal -> statistically independent variables
+find hidden variables from observables
+
+finds local features
+
+useful for analysis of data to find what the important features are, then
+possibly extract features with other algorithms
+
+Xi -> Yi
+Yi independent of Yj
+I(Yi,Yj) = 0  : independence
+I(Y,X) => maximized
+
+blind source separation problem - cocktail party problem
+    N people talking, N microphones listening
+    each mike hears all N people but with different volume
+    people are hidden variables, mike signals are observables
+
+
+correlation vs independent
+
+correlation is a linear relationship
+dependence can be nonlinear
+
+X = [-1,1]  uncorrelated
+y = X^2     dependent
+
+ICA results are not ordered (bag)
+PCA results are ordered
+
+PCA vs ICA
+
+BSS -> ICA works, PCA fails
+ICA is directional, PCA doesn't care
+    rows/cols matter in ICA, not in PCA
+
+Faces recognition
+    PCA -> brightness, average face (eigenfaces)
+           finds global features
+    ICA -> noses, eyes, hair
+            finds local features
+
+Natural Scenes
+    PCA -> brightness, averages
+    ICA -> edges,
+
+Documents
+    ICA -> topics
+
+RCA
+----
+Random components analysis
+generates random directions
+works well for classification
+project N -> M dimensions
+manages to pick up correlations
+efficient FAST
+
+LDA
+---
+linear discriminant analysis
+finds a projection that discriminates based on the label
+(like supervised learning)
