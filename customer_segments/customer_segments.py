@@ -167,7 +167,7 @@ print(score)
 
 
 # Apply your clustering algorithm of choice to the reduced data
-clusterer = GaussianMixture(n_components=2)
+clusterer = GaussianMixture(n_components=2,random_state=42)
 
 clusterer.fit(reduced_data)
 
