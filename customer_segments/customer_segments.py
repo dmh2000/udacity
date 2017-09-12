@@ -184,3 +184,10 @@ sample_preds = clusterer.predict(pca_samples)
 score = silhouette_score(reduced_data,preds)
 
 print(score)
+
+print("----------------------------")
+log_centers = pca.inverse_transform(centers)
+true_centers = np.exp(log_centers)
+print(centers)
+print(log_centers)
+print(true_centers)

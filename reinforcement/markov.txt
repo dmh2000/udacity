@@ -1,0 +1,76 @@
+Markov decision process
+
+States  : S (arbitrarily labeled)
+Model   : T(s,a,s') ~ probability(s' | s,a)
+          tranition model
+          s' is result
+          s is current state
+          a is action
+          sum of P over all s' == 1.0
+Actions : A(S), A  represents all things the model can do and unallowable actions
+Reward  : R(s), R(S,a), R(s,a,s')  scalar value for being in a state (+ or -)
+          domain knowledge
+Policy  : Pi(s) -> a  what action to take in each state
+          Pi* -> policy that maximizes reward
+
+Markovian Property - only present matters. previous states don't matter
+stationarity       - rules don't change over time, world is stationary
+
+Solution of Markov Process
+
+Policy : a bunch of <s,a> pairs
+         <s,a,r> to find optimal action
+
+Plan : overall sequence of actions
+
+Rewards
+    delayed rewards
+    minor changes matter
+
+World:
+    R(s) = -0.04 for all states
+        a small negative reward encourages to end the process
+    take long way around to avoid bad states
+
+
+Temporal Credit Assignment : supervised learning
+
+inifinite time horizon vs time limit
+utility of a sequence :
+    add reward at each state
+    U(S0,S1,S2,...) = sum[t = 0->infinity) R(St)
+
+    sum(gamma^t * R(St))
+
+    discounted sums : go finite distance in infinite steps
+    sum(gamma^t * RMax) = geometric series = Rmax / (1 - gamma)
+
+
+Policies
+
+    PI* = argmax(PI) expectation[discounted sums) | PI]
+
+    Upi(S) =
+
+Reward !-= Utility
+    reward = immediate feedback
+    utility = sum of rewards from Sn on
+
+true utility  = utility using optimal policy
+
+
+Bellman Equation : value of current state + max (utility of all successive states)
+
+n equations in n unknowns : non-linear due to 'max'
+
+value iteration:
+    start with arbitrary utilities
+    update based on neighbor's estimated utility
+    repeat until convergence
+
+
+
+
+stationary  preferences : tomorrow is same as today
+
+

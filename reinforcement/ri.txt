@@ -1,0 +1,60 @@
+
+Planning:
+    model(T,R) -> Planner -> Policy (Pi)
+        value iteration
+        policy iteration
+
+Learning
+    transitions -> learner -> Policy
+    <s,a,r,s'>*
+
+Modeling
+    transition -> modeler -> Model
+
+Simulator
+    model -> simulator -> transitions
+
+model -> simulator -> transitions -> learner -> policy
+
+transitions -> modeler -> model -> planner -> policy
+
+1. policy search algorithm
+States -> PI -> Actions
+
+2. value function based learning
+States -> Utility -> Value
+
+3. Model Based RL
+    s -> T -> s'
+    a -> R -> r
+
+Q Value Function
+
+Q(S,a) = R(S) + gamma * Sum[T(s,a,s'] max Q(s',q'))]
+                         s'               s'
+
+
+Q-Learning
+
+how to initialize Q-hat
+how to decay gamma-t
+how to chose actions
+    always chose a0 : won't learn
+    choose randomly : learn optimal policy but doesn't use it
+    Q-hat greedy    : learns but finds local min - doesn't learn
+    random restarts : works but slow
+    simulated annealing : occasional random action
+
+Epsilon-Greedy Exploration
+    greedy limit + infinite exploration
+    Q-hat -> Q and PI-hat -> PI*
+    learn          use
+    exploration    exploitation
+
+    exploration-exploitation dilemma : pick one
+
+    fundamental tradeoff in reinforcement learning
+        explore or exploit
+        learn   or use
+
+
