@@ -58,3 +58,12 @@ Epsilon-Greedy Exploration
         learn   or use
 
 
+Learn to solve a Markov Decision Process
+    T/R are not known
+    interact with transitions
+
+Q-Learning : convergence, family
+    optimism in the face of uncertainty : A*
+
+Exploration-Exploitation : learn and use
+

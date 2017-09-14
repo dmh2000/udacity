@@ -1,0 +1,95 @@
+Game Theory
+    mathematics of conflict
+    involving multiple agents
+    economics, politics, biology
+
+
+
+
+strategies : mapping of all possible states and actions
+
+pure strategy  :
+    zero-sum finite deterministic game of perfect information
+    there always exists an optimal pure strategy for each player
+    all players are attempting to maximize their result
+mixed strategy :
+    a probability is assigned to each pure strategy
+    zero sum, non-deterministic game of perfect information
+    non-zero sum, non deterministic game of hidden information
+
+prisoners dilemma
+
+1 defect other coop
+2 defect other coop
+both defect
+both coop
+                       B
+             coop            defect
+    coop     -1,-1            -9,0
+A
+    defect   0,-9             -6,-6 <- dominates, never coop
+
+strict dominance
+
+
+Nash Equilibrium
+
+
+n players with n strategies are a Nash Equilibrium IFF
+Si* = argmax-Si utility(S1*,S2*,...,Sn*)
+
+no one person needs to change strategy in a world where
+everyone else keeps their strategy the same
+
+works with pure or mixed strategies
+
+in the n-player pure strategy game, if elimination
+of strictly dominated strategies eliminates all but
+one combination, that combination is the unique NE
+
+any NE will survive elimination of strictly dominatED strategies
+
+if n is finite and strategies are finite, there exists a (possibly mixed) NE
+
+
+Mechanism Design : set of incentives to get desired behavior
+
+Stochastic Games and Multiagent RL
+
+MDP : RL == stochastic game: multiagent RL
+
+Stochastic Games
+----------------
+S: states
+Ai : actions for i
+T: transitions
+Ri : rewards for i
+gamma : discount
+
+zero sum stochastic games (minimax-Q)
+-------------------------
+    value iteration works
+    minimax-Q converges
+    unique solution to Q*
+    policies can be computed independently
+    update efficient
+    Q functions sufficient to specify policy
+
+General sum stochastic games (Nash-Q)
+----------------------------
+    value iteration does not work
+    Nash-Q doesn't converge
+    no unique solution to Q*
+    policies can't be computed independently
+    update not efficient unless P = PPAD
+    Q functions not sufficient to specify policy
+
+
+Ideas for solving general sum games
+-----------------------------------
+repeated stochastic games (folk theorem)
+cheap talk -> correlated equilibrium
+cognitive hierarchy -> best responses
+side payments (coco values)
+
+
