@@ -28,6 +28,17 @@ class LearningAgent(Agent):
         self.epsilon_decay = epsilon_decay  # decay rate of epsilon (simple version)
         self.testing = testing
 
+        # only states that have valid moves
+        # any other state will result in a violation
+        self.valid_states = [
+            # wayp      light     left    oncoming
+            ('right', 'green', None, None),
+            ('right', 'red', 'left', None),
+            ('right', 'red', 'right', None),
+            ('forward', 'green', None, None),
+            ('left', 'green', None, 'left')
+        ]
+
     def reset(self, destination=None, testing=False):
         """ The reset function is called at the beginning of each trial.
             'testing' is set to True if testing trials are being used
@@ -44,7 +55,7 @@ class LearningAgent(Agent):
         # If 'testing' is True, set epsilon and alpha to 0
         if self.testing:
             self.epsilon = 0.0
-            self.alpha   = 0.0
+            self.alpha = 0.0
         else:
             self.epsilon = self.epsilon * self.epsilon_decay
 
@@ -70,25 +81,24 @@ class LearningAgent(Agent):
         # With the hand-engineered features, this learning process gets entirely negated.
 
         # Set 'state' as a tuple of relevant data for the agent
-        print(inputs)
-
-        # valid = False
-        # # right on green is always ok
-        # if waypoint == 'right' and inputs['light'] == 'green':
-        #     valid_action = True
-        # # right on red is ok if left is turning left
-        # elif waypoint == 'right' and inputs['light'] == 'red' and inputs['left'] == 'left':
-        #     valid_action = True
-        # # right on red is ok if left is turning right
-        # elif waypoint == 'right' and inputs['light'] == 'red' and inputs['left'] == 'right':
-        #     valid_action = True
-        # # forward on green is always ok
-        # elif waypoint == 'forward' and inputs['light'] == 'green':
-        #     valid_action = True
-        # elif waypoint == 'left' and inputs['light'] == 'green' and inputs['incoming'] != 'forward':
-        #     valid_action = True
-
-        state = (waypoint, inputs['light'], inputs['left'], inputs['oncoming'])
+        # right on green is always ok
+        if waypoint == 'right' and inputs['light'] == 'green':
+            state = ('right', 'green', None, None)
+        # right on red is ok only if left is turning left
+        elif waypoint == 'right' and inputs['light'] == 'red' and inputs['left'] == 'left':
+            state = ('right', 'red', 'left', None)
+        # right on red is ok if left is turning right
+        elif waypoint == 'right' and inputs['light'] == 'red' and inputs['left'] == 'right':
+            state = ('right', 'red', 'right', None)
+        # forward on green is always ok
+        elif waypoint == 'forward' and inputs['light'] == 'green':
+            state = ('forward', 'green', None, None)
+        # left on green
+        elif waypoint == 'left' and inputs['light'] == 'green' and inputs['incoming'] == 'left':
+            state = ('left', 'green', None, 'left')
+        else:
+            # all other states are 'dont move'
+            state = (None, None, None, None)
 
         return state
 
@@ -116,13 +126,38 @@ class LearningAgent(Agent):
         #   Then, for each action available, set the initial Q-value to 0.0
         if state not in self.Q:
             self.Q[state] = {
-                'left' : 0.0,
-                'right': 0.0,
+                None: 0.0,
                 'forward': 0.0,
-                'wait': 0.0
+                'left': 0.0,
+                'right': 0.0
             }
 
         return
+
+    def choose_maxq(self, state):
+        # testing, choose an action with the highest Q-value for the current state
+        # Be sure that when choosing an action with highest Q-value that you randomly select between actions that "tie".
+        q = self.Q[state]
+
+        # find max q value
+        mq = 0
+        for key, value in q.iteritems():
+            if value > mq:
+                mq = value
+
+        # make array of max q values
+        a = []
+        for key, value in q.iteritems():
+            if value == mq:
+                a.append(key)
+
+        # select one at random
+        if len(a) > 0:
+            action = np.random.choice(a)
+        else:
+            action = None
+
+        return action
 
     def choose_action(self, state):
         """ The choose_action function is called when the agent is asked to choose
@@ -133,31 +168,25 @@ class LearningAgent(Agent):
         self.next_waypoint = self.planner.next_waypoint()
         action = None
 
-        ########### 
-        ## TO DO ##
-        ###########
-        if not self.testing:
+        # choose action based on flag state (testing,learning,not learning)
+        if self.testing:
+            action = self.choose_maxq(state)
+        else:
             if self.learning:
+                # apply the exploration factor
                 # When learning, choose a random action with 'epsilon' probability
-                action = np.random.choice(self.valid_actions)
-                pass
+                # to avoid always taking the best action
+                p = np.random.random()
+                if p < self.epsilon:
+                    # choose random action
+                    action = np.random.choice(self.valid_actions)
+                else:
+                    # choose best action
+                    action = self.choose_maxq(state)
+
             else:
                 # When not learning, choose a random action
                 action = np.random.choice(self.valid_actions)
-        else:
-            # Otherwise, choose an action with the highest Q-value for the current state
-            # Be sure that when choosing an action with highest Q-value that you randomly select between actions that "tie".
-            q = self.Q[state]
-            a = []
-            mq = 0
-            # get array of max q values
-            for key, value in q:
-                if value > mq:
-                    mq = value
-                    a.append(key)
-            # select one at random
-            action = np.random.choice(a)
-
 
         return action
 
@@ -171,6 +200,11 @@ class LearningAgent(Agent):
         ###########
         # When learning, implement the value iteration update rule
         #   Use only the learning rate 'alpha' (do not use the discount factor 'gamma')
+
+        q = self.Q[state]
+
+        for key, value in q.iteritems():
+            print(key, value)
 
         return
 
@@ -206,7 +240,7 @@ def run():
     #   learning   - set to True to force the driving agent to use Q-learning
     #    * epsilon - continuous value for the exploration factor, default is 1
     #    * alpha   - continuous value for the learning rate, default is 0.5
-    agent = env.create_agent(LearningAgent)
+    agent = env.create_agent(LearningAgent, learning=True)
 
     ##############
     # Follow the driving agent
