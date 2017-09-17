@@ -1,10 +1,8 @@
-import random
-import math
 import numpy as np
 from environment import Agent, Environment
 from planner import RoutePlanner
 from simulator import Simulator
-
+import sys
 
 class LearningAgent(Agent):
     """ An agent that learns to drive in the Smartcab world.
@@ -40,11 +38,12 @@ class LearningAgent(Agent):
         # Update additional class parameters as needed
         # If 'testing' is True, set epsilon and alpha to 0
         if testing:
-            epsilon = 0.0
-            alpha = 0.0
+            self.epsilon = 0.0
+            self.alpha = 0.0
         else:
             if self.learning:
                 self.epsilon -= self.epsilon_decay
+                # self.epsilon = self.epsilon * self.epsilon
             else:
                 # not learning
                 pass
@@ -67,9 +66,45 @@ class LearningAgent(Agent):
         # With the hand-engineered features, this learning process gets entirely negated.
 
         # Set 'state' as a tuple of relevant data for the agent        
+        # state = (waypoint, inputs['light'], inputs['left'], inputs['oncoming'])
         state = (waypoint, inputs['light'], inputs['left'], inputs['oncoming'])
 
         return state
+
+    @staticmethod
+    def valid_action(action, inputs):
+        light = inputs['light']
+        left = inputs['left']
+        oncoming = inputs['oncoming']
+
+        action_okay = True
+        if action == 'right':
+            if light == 'red' and left == 'forward':
+                action_okay = False
+        elif action == 'forward':
+            if light == 'red':
+                action_okay = False
+        elif action == 'left':
+            if light == 'red' or (oncoming == 'forward' or oncoming == 'right'):
+                action_okay = False
+        return action_okay
+
+    # am i cheating to check that actions are valid?
+    def random_action(self, actions, inputs):
+        # only pick from legal actions
+        legal_actions = []
+
+        # accumulate all legal actions given the inputs
+        for action in actions:
+            action_okay = self.valid_action(action, inputs)
+            if action_okay:
+                # add this one to list
+                legal_actions.append(action)
+
+        # there will always be at least 'None' as a valid action
+        action = np.random.choice(legal_actions)
+
+        return action
 
     def get_maxQ(self, state):
         """ The get_max_Q function is called when the agent is asked to find the
@@ -78,6 +113,7 @@ class LearningAgent(Agent):
         # Calculate the maximum Q-value of all actions for a given state
 
         # get the maximum value from the current state
+        # in this case, maximum of each possible action
         maxQ = np.max(self.Q[state].values())
 
         return maxQ
@@ -87,10 +123,14 @@ class LearningAgent(Agent):
         maxq = self.get_maxQ(state)
 
         # get list of actions equal to maxq value
+        # this is the 'summation' stage although in this case it only looks back one
         a = []
         for key, value in self.Q[state].iteritems():
             if value == maxq:
                 a.append(key)
+
+        # in case floating point comparison error
+        assert len(a) > 0
 
         # select a random action from list
         action = np.random.choice(a)
@@ -110,28 +150,6 @@ class LearningAgent(Agent):
                     q[action] = 0.0
                 self.Q[state] = q
 
-        return
-
-    # am i cheating to check that actions are valid?
-    @staticmethod
-    def valid_action(action, inputs):
-        light = inputs['light']
-        left = inputs['left']
-        oncoming = inputs['oncoming']
-
-        action_okay = True
-        if action == 'right':
-            if light == 'red' and left == 'forward':
-                action_okay = False
-        elif action == 'forward':
-            if light == 'red':
-                action_okay = False
-        elif action == 'left':
-            if light == 'red' or (oncoming == 'forward' or oncoming == 'right'):
-                action_okay = False
-
-        return action_okay
-
     def choose_action(self, state):
         """ The choose_action function is called when the agent is asked to choose
             which action to take, based on the 'state' the smartcab is in. """
@@ -146,27 +164,27 @@ class LearningAgent(Agent):
         # When learning, choose a random action with 'epsilon' probability
         # Otherwise, choose an action with the highest Q-value for the current state
         # Be sure that when choosing an action with highest Q-value that you randomly select between actions that "tie".
+        # THIS VERSION ONLY ALLOWS CHOICE OF ACTIONS THAT FOLLOW THE TRAFFIC RULES, TO AVOID ACCIDENTS
         if self.testing:
-            # test
+            # testing, get action based on learned maxq
             action = self.get_maxQaction(state)
-        else:
-            if self.learning:
-                p = np.random.random()
-                # if probability is greater than epsilon
-                if p >= self.epsilon:
-                    # choose a random value
-                    action = np.random.choice(self.valid_actions)
-                else:
-                    # choose action with highest q value
-                    action = self.get_maxQaction(state)
+        elif self.learning:
+            # choose an action
+            p = np.random.random()
+            # if p is less than epsilon,
+            # then explore
+            # else choose best
+            # as epsilon gets smaller, chance of exploring decreases
+            if p < self.epsilon:
+                # choose a random action that is valid
+                action = self.random_action(self.valid_actions, inputs)
             else:
-                # not learning, choose a random value
-                action = np.random.choice(self.valid_actions)
-
-        # only allow valid actions for the given state
-        if not self.valid_action(action, inputs):
-            # action is invalid, don't move instead
-            action = None
+                # choose action with highest q value
+                action = self.get_maxQaction(state)
+        else:
+            # not testing or learning
+            # choose a random action that is valid
+            action = self.random_action(self.valid_actions, inputs)
 
         return action
 
@@ -178,12 +196,8 @@ class LearningAgent(Agent):
         # When learning, implement the value iteration update rule
         #   Use only the learning rate 'alpha' (do not use the discount factor 'gamma')
         if self.learning:
-            # update this state-action with best next state-action value
-            # get a couple of intermediate values for debug
-            q = self.Q[state][action]
-            p = self.alpha * reward + (1.0-self.alpha) * q
             # apply an alpha filter to the current state and its reward
-            self.Q[state][action] = self.alpha * reward + (1.0-self.alpha) * self.Q[state][action]
+            self.Q[state][action] = (1.0 - self.alpha) * reward + self.alpha * self.Q[state][action]
 
         return
 
@@ -201,7 +215,7 @@ class LearningAgent(Agent):
         return
 
 
-def run():
+def run(test_args):
     """ Driving function for running the simulation. 
         Press ESC to close the simulation, or [SPACE] to pause the simulation. """
 
@@ -219,7 +233,7 @@ def run():
     #   learning   - set to True to force the driving agent to use Q-learning
     #    * epsilon - continuous value for the exploration factor, default is 1
     #    * alpha   - continuous value for the learning rate, default is 0.5
-    agent = env.create_agent(LearningAgent, learning=True, epsilon_decay=0.05)
+    agent = env.create_agent(LearningAgent, learning=test_args['learning'], epsilon=test_args['epsilon'], alpha=test_args['alpha'], epsilon_decay=test_args['epsilon_decay'])
 
     ##############
     # Follow the driving agent
@@ -234,15 +248,40 @@ def run():
     #   display      - set to False to disable the GUI if PyGame is enabled
     #   log_metrics  - set to True to log trial and simulation results to /logs
     #   optimized    - set to True to change the default log file name
-    sim = Simulator(env, update_delay=0.01, log_metrics=True, display=False)
+    sim = Simulator(env, optimized=test_args['optimized'], update_delay=0.01, log_metrics=True, display=False)
 
     ##############
     # Run the simulator
     # Flags:
     #   tolerance  - epsilon tolerance before beginning testing, default is 0.05 
     #   n_test     - discrete number of testing trials to perform, default is 0
-    sim.run(n_test=10)
+    sim.run(n_test=test_args['n_test'], tolerance=test_args['tolerance'])
 
 
 if __name__ == '__main__':
-    run()
+    # arguments for improvements
+    test_args = [
+        # sim, no learning parameters
+        {'learning': False, 'optimized': False, 'alpha': 0.5, 'n_test': 10,
+         'epsilon': 1.0,    'tolerance': 0.05,   'epsilon_decay': 0.05},
+
+        # default-learning parameters
+        {'learning': True,  'optimized': False, 'alpha': 0.5, 'n_test': 10,
+         'epsilon': 1.0,    'tolerance': 0.05,  'epsilon_decay': 0.05},
+
+        # optimized-learning, same as default except linear decay is smaller, resulting in more trials
+        {'learning': True,  'optimized': True,  'alpha': 0.5, 'n_test': 10,
+         'epsilon':  1.0,   'tolerance': 0.05,  'epsilon_decay': 0.001}
+    ]
+
+    if len(sys.argv) > 0:
+        v = int(sys.argv[1])
+    else:
+        v = 0
+    p = test_args[v]
+
+    run(p)
+
+
+# count number of states generated from  <log>.txt file
+# grep \( logs\sim_default-learning.txt  | wc
