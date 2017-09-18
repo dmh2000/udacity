@@ -3,12 +3,14 @@ from environment import Agent, Environment
 from planner import RoutePlanner
 from simulator import Simulator
 import sys
+from time import time
+
 
 class LearningAgent(Agent):
     """ An agent that learns to drive in the Smartcab world.
         This is the object you will be modifying. """
 
-    def __init__(self, env, learning=False, epsilon=1.0, alpha=0.5, epsilon_decay=1):
+    def __init__(self, env, learning=False, epsilon=1.0, alpha=0.5, epsilon_decay=1, epsilon_type='default'):
         super(LearningAgent, self).__init__(env)  # Set the agent in the evironment
         self.planner = RoutePlanner(self.env, self)  # Create a route planner
         self.valid_actions = self.env.valid_actions  # The set of valid actions
@@ -22,6 +24,8 @@ class LearningAgent(Agent):
         # Set any additional class parameters as needed
         self.testing = False
         self.epsilon_decay = epsilon_decay
+        self.epsilon_type = epsilon_type
+        self.t = 0
 
     def reset(self, destination=None, testing=False):
         """ The reset function is called at the beginning of each trial.
@@ -31,6 +35,9 @@ class LearningAgent(Agent):
         # Select the destination as the new location to route to
         self.planner.route_to(destination)
 
+        # increment trial count
+        self.t += 1
+
         # update testing flag
         self.testing = testing
 
@@ -38,15 +45,26 @@ class LearningAgent(Agent):
         # Update additional class parameters as needed
         # If 'testing' is True, set epsilon and alpha to 0
         if testing:
+            # testing
             self.epsilon = 0.0
             self.alpha = 0.0
-        else:
-            if self.learning:
+        elif self.learning:
+            # learning
+            # linear
+            if self.epsilon_type == 'default':
+                # linear
                 self.epsilon -= self.epsilon_decay
-                # self.epsilon = self.epsilon * self.epsilon
+            elif self.epsilon_type == 'improved-linear':
+                self.epsilon -= self.epsilon_decay
+            elif self.epsilon_type == 'a^t':
+                # concave curve : below linear
+                self.epsilon = self.epsilon_decay ** self.t
             else:
-                # not learning
-                pass
+                # default is linear
+                self.epsilon -= self.epsilon_decay
+        else:
+            # not learning
+            self.epsilon = 0
 
         return None
 
@@ -71,6 +89,7 @@ class LearningAgent(Agent):
 
         return state
 
+    # check that an action is legal for the current sense inputs
     @staticmethod
     def valid_action(action, inputs):
         light = inputs['light']
@@ -89,7 +108,7 @@ class LearningAgent(Agent):
                 action_okay = False
         return action_okay
 
-    # am i cheating to check that actions are valid?
+    # get a random action that is legal for the current sense inputs
     def random_action(self, actions, inputs):
         # only pick from legal actions
         legal_actions = []
@@ -114,7 +133,10 @@ class LearningAgent(Agent):
 
         # get the maximum value from the current state
         # in this case, maximum of each possible action
-        maxQ = np.max(self.Q[state].values())
+        if state in self.Q:
+            maxQ = np.max(self.Q[state].values())
+        else:
+            maxQ = 0
 
         return maxQ
 
@@ -193,11 +215,14 @@ class LearningAgent(Agent):
             receives a reward. This function does not consider future rewards 
             when conducting learning. """
 
+        # THIS WORKS (with enough learning trials) BUT DOESN'T SEEM TO MATCH Q-LEARNING
+        # IT DOES NOT USE THE NEXT STATE-ACTIONS FOR ITS UPDATE
         # When learning, implement the value iteration update rule
         #   Use only the learning rate 'alpha' (do not use the discount factor 'gamma')
         if self.learning:
             # apply an alpha filter to the current state and its reward
-            self.Q[state][action] = (1.0 - self.alpha) * reward + self.alpha * self.Q[state][action]
+            # larger alpha = more reward, smaller alpha = more current Q value
+            self.Q[state][action] = (1.0 - self.alpha) * self.Q[state][action] + self.alpha * reward
 
         return
 
@@ -233,7 +258,12 @@ def run(test_args):
     #   learning   - set to True to force the driving agent to use Q-learning
     #    * epsilon - continuous value for the exploration factor, default is 1
     #    * alpha   - continuous value for the learning rate, default is 0.5
-    agent = env.create_agent(LearningAgent, learning=test_args['learning'], epsilon=test_args['epsilon'], alpha=test_args['alpha'], epsilon_decay=test_args['epsilon_decay'])
+    agent = env.create_agent(LearningAgent,
+                             learning=test_args['learning'],
+                             epsilon=test_args['epsilon'],
+                             alpha=test_args['alpha'],
+                             epsilon_decay=test_args['epsilon_decay'],
+                             epsilon_type=test_args['epsilon_type'])
 
     ##############
     # Follow the driving agent
@@ -248,7 +278,7 @@ def run(test_args):
     #   display      - set to False to disable the GUI if PyGame is enabled
     #   log_metrics  - set to True to log trial and simulation results to /logs
     #   optimized    - set to True to change the default log file name
-    sim = Simulator(env, optimized=test_args['optimized'], update_delay=0.01, log_metrics=True, display=False)
+    sim = Simulator(env, optimized=test_args['optimized'], update_delay=0.001, log_metrics=True, display=False)
 
     ##############
     # Run the simulator
@@ -263,24 +293,33 @@ if __name__ == '__main__':
     test_args = [
         # sim, no learning parameters
         {'learning': False, 'optimized': False, 'alpha': 0.5, 'n_test': 10,
-         'epsilon': 1.0,    'tolerance': 0.05,   'epsilon_decay': 0.05},
+         'epsilon': 1.0, 'tolerance': 0.05, 'epsilon_decay': 0.05, 'epsilon_type': 'no-learning'},
 
         # default-learning parameters
-        {'learning': True,  'optimized': False, 'alpha': 0.5, 'n_test': 10,
-         'epsilon': 1.0,    'tolerance': 0.05,  'epsilon_decay': 0.05},
+        {'learning': True, 'optimized': False, 'alpha': 0.5, 'n_test': 10,
+         'epsilon': 1.0, 'tolerance': 0.05, 'epsilon_decay': 0.05, 'epsilon_type': 'default-linear'},
 
-        # optimized-learning, same as default except linear decay is smaller, resulting in more trials
-        {'learning': True,  'optimized': True,  'alpha': 0.5, 'n_test': 10,
-         'epsilon':  1.0,   'tolerance': 0.05,  'epsilon_decay': 0.001}
+        # optimized-learning, same as default except linear decay is smaller, resulting in more trials (~9500)
+        {'learning': True, 'optimized': True, 'alpha': 0.5, 'n_test': 20,
+         'epsilon': 1.0, 'tolerance': 0.05, 'epsilon_decay': 0.0005, 'epsilon_type': 'improved-linear'},
+
+        # optimized-learning, epsilon = a^t
+        {'learning': True, 'optimized': True, 'alpha': 0.5, 'n_test': 20,
+         'epsilon': 1.0, 'tolerance': 0.05, 'epsilon_decay': 0.996, 'epsilon_type': 'a^t'}
     ]
 
-    if len(sys.argv) > 0:
+    if len(sys.argv) > 1:
         v = int(sys.argv[1])
     else:
-        v = 0
-    p = test_args[v]
+        # perform optimized-learning, epsilon = a^t
+        v = 3
 
-    run(p)
+    t0 = time()
+    run(test_args[v])
+    t1 = time()
+    # elapsed time
+    print 'runtime',
+    print t1 - t0
 
 
 # count number of states generated from  <log>.txt file

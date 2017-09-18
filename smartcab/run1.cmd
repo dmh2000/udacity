@@ -1,4 +1,3 @@
-python smartcab/agent.py 2
-grep \( logs\sim_default-learning.txt  | wc
-python results.py logs\sim_default-learning.csv
+python smartcab\agent_default-learning.py 1
+python results.py logs\sim_default-learning.csv logs\sim_default-learning.txt
 

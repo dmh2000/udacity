@@ -149,24 +149,18 @@ class LearningAgent(Agent):
         if self.testing:
             # test
             action = self.get_maxQaction(state)
-        else:
-            if self.learning:
-                p = np.random.random()
-                # if probability is greater than epsilon
-                if p >= self.epsilon:
-                    # choose a random value
-                    action = np.random.choice(self.valid_actions)
-                else:
-                    # choose action with highest q value
-                    action = self.get_maxQaction(state)
-            else:
-                # not learning, choose a random value
+        elif self.learning:
+            p = np.random.random()
+            # if probability is greater than epsilon
+            if p >= self.epsilon:
+                # choose a random value
                 action = np.random.choice(self.valid_actions)
-
-        # only allow valid actions for the given state
-        if not self.valid_action(action, inputs):
-            # action is invalid, don't move instead
-            action = None
+            else:
+                # choose action with highest q value
+                action = self.get_maxQaction(state)
+        else:
+            # not learning, choose a random value
+            action = np.random.choice(self.valid_actions)
 
         return action
 
@@ -179,11 +173,8 @@ class LearningAgent(Agent):
         #   Use only the learning rate 'alpha' (do not use the discount factor 'gamma')
         if self.learning:
             # update this state-action with best next state-action value
-            # get a couple of intermediate values for debug
-            q = self.Q[state][action]
-            p = self.alpha * reward + (1.0-self.alpha) * q
             # apply an alpha filter to the current state and its reward
-            self.Q[state][action] = self.alpha * reward + (1.0-self.alpha) * self.Q[state][action]
+            self.Q[state][action] = (1.0 - self.alpha) * self.Q[state][action] + self.alpha * reward
 
         return
 
@@ -234,7 +225,7 @@ def run():
     #   display      - set to False to disable the GUI if PyGame is enabled
     #   log_metrics  - set to True to log trial and simulation results to /logs
     #   optimized    - set to True to change the default log file name
-    sim = Simulator(env, update_delay=0.01, log_metrics=True, display=False)
+    sim = Simulator(env, update_delay=0.01, log_metrics=True, display=True)
 
     ##############
     # Run the simulator
