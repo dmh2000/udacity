@@ -30,8 +30,8 @@ States -> Utility -> Value
 
 Q Value Function
 
-Q(S,a) = R(S) + gamma * Sum[T(s,a,s'] max Q(s',q'))]
-                         s'               s'
+# Q(S,a) = R(S) + gamma * Sum[T(s,a,s'] max Q(s',q'))]
+#                         s'               s'
 
 
 Q-Learning

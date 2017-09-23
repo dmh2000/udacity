@@ -304,8 +304,16 @@ if __name__ == '__main__':
          'epsilon': 1.0, 'tolerance': 0.05, 'epsilon_decay': 0.0005, 'epsilon_type': 'improved-linear'},
 
         # optimized-learning, epsilon = a^t
-        {'learning': True, 'optimized': True, 'alpha': 0.5, 'n_test': 20,
-         'epsilon': 1.0, 'tolerance': 0.05, 'epsilon_decay': 0.996, 'epsilon_type': 'a^t'}
+        {'learning': True, 'optimized': True, 'alpha': 0.25, 'n_test': 20,
+         'epsilon': 1.0, 'tolerance': 0.05, 'epsilon_decay': 0.998, 'epsilon_type': 'a^t'},
+
+        # optimized-learning, epsilon = a^t
+        {'learning': True, 'optimized': True, 'alpha': 0.50, 'n_test': 20,
+         'epsilon': 1.0, 'tolerance': 0.05, 'epsilon_decay': 0.998, 'epsilon_type': 'a^t'},
+
+        # optimized-learning, epsilon = a^t
+        {'learning': True, 'optimized': True, 'alpha': 0.75, 'n_test': 20,
+         'epsilon': 1.0, 'tolerance': 0.05, 'epsilon_decay': 0.998, 'epsilon_type': 'a^t'}
     ]
 
     if len(sys.argv) > 1:

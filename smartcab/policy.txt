@@ -1,0 +1,21 @@
+**Answer:** 
+
+**Optimal Policy**
+
+Definition: 'legal' means an action does not violate traffic rules, as defined in the DummyAgent object in the Environment object
+
+*Rules:*
+    1. don't take any illegal actions (this will prevent accidents)
+    
+*Policy:*
+<pre>
+If the planner.next_waypoint is a legal action:
+....make that the action, because the planner always moves towards the destination 
+If the planner.next_waypoint is not a legal action:
+....determine the set of available actions that are legal and have the highest Q score
+....('None' will always be legal)
+....from that set, select one at random (should it be 'select one that moves towards the destination?)
+</pre>            
+
+** Actual Policy **
+

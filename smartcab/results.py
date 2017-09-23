@@ -109,3 +109,8 @@ print ',trials,',
 print trials,
 print ',states,',
 print states
+
+if reliability[0] == 'A':
+    sys.exit(1)
+else:
+    sys.exit(0)

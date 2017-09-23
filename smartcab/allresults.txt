@@ -1,0 +1,23 @@
+alpha = 0.25, epsilon decay = 1/a^t, a=0.998, tolerance=0.5
+reliability, A+ ,safety, A+ ,trials, 1497 ,states, 96
+reliability, A+ ,safety, A+ ,trials, 1497 ,states, 96
+reliability, A  ,safety, A+ ,trials, 1497 ,states, 96
+reliability, A+ ,safety, A+ ,trials, 1497 ,states, 96
+reliability, A+ ,safety, A+ ,trials, 1497 ,states, 96
+reliability, A  ,safety, A+ ,trials, 1497 ,states, 96
+
+alpha = 0.50, epsilon decay = 1/a^t, a=0.998, tolerance=0.5
+reliability, A+ ,safety, A+ ,trials, 1497 ,states, 96
+reliability, A+ ,safety, A+ ,trials, 1497 ,states, 96
+reliability, A+ ,safety, A+ ,trials, 1497 ,states, 96
+reliability, A+ ,safety, A+ ,trials, 1497 ,states, 96
+reliability, A+ ,safety, A+ ,trials, 1497 ,states, 96
+reliability, A  ,safety, A+ ,trials, 1497 ,states, 96
+
+alpha = 0.75, epsilon decay = 1/a^t, a=0.998, tolerance=0.5
+reliability, A  ,safety, A+ ,trials, 1497 ,states, 96
+reliability, A+ ,safety, A+ ,trials, 1497 ,states, 96
+reliability, A+ ,safety, A+ ,trials, 1497 ,states, 96
+reliability, A+ ,safety, A+ ,trials, 1497 ,states, 96
+reliability, A+ ,safety, A+ ,trials, 1497 ,states, 96
+reliability, A+ ,safety, A+ ,trials, 1497 ,states, 96

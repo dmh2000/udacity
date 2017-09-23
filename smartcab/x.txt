@@ -1,0 +1,17 @@
+Assume the planner next_waypoint is the best move to make at any given step
+Definition: 'legal' means an action does not violate traffic rules
+
+If the next_waypoint is a legal action:
+    make that the action
+
+If the next waypoint is not a legal action:
+    determine which other valid actions are legal
+    ('None' will always be legal)
+    from the set of valid actions,
+        if  one of them moves in the direction of the destination
+            choose that one
+        else
+            choose None
+    The rationale here is that to arrive at the destination in time,
+    it is better to not move away from the destination. Not moving
+    at all is better that moving away

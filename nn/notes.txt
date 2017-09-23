@@ -1,0 +1,120 @@
+log-loss error function
+
+differentiable
+continuous
+
+signmoid function
+
+softmax function
+
+one hot ecoding : for multiple yes/no variables
+
+
+maximum likelihood
+P(blue) = sigmoid(Wx+b)
+P(red)  = 1 - P(blue)
+likelihood = P(actual blue) * P(actual red)
+
+maximizing probability
+
+log function turns products into sums
+
+
+
+cross-entropy:
+    change a*b*c to -ln(a) - ln(b) - ln(c)
+    high cross entropy == bad model
+    low cross entropy = good model
+
+minimize cross-entropy
+
+gradient descent:
+
+gradient = vector sum of partial derivatives of error with respect to each axis
+step = -gradient
+
+y = sigmoid(Wx+b)  large/bad
+y = sigmoid(W1X1 + ... + WnXn + b)
+dE = (dE/dW1, ..., dE/DWn, dE/db)
+
+step in direction of dE with learning rate alpha (0.1 etc)
+
+Wi' = Wi - alpha * dE/dWi
+b' = b - alpha * dE/db
+y = sigmoid(W'x + b')
+
+Sigmoid = 1 / (1+e^-x)
+dSigmoid(x) = sigmoid(x) * (1-sigmoid(x))
+
+point =   (X1,...,Xn)
+label      Y
+prediction Yhat
+partial d/dWi E = -(Y - Yhat)(x1,...,Xn,1)
+
+Gradient Descent Algorithm
+
+1. start with random weights W1,...,Wn,B
+2. for every point X1,...,Xn
+   for i = 1...n:
+       update Wi' = Wi - alpha * dE/dWi
+       update B' = B - alpha * dE/dB
+
+   same as
+    for i = 1...n:
+        update Wi' = Wi - alpha(y - yhat)Xi
+        B' = B - alpha(y - yhat)
+
+# ======================================================================
+# GRADIENT DESCENT
+# ======================================================================
+import numpy as np
+# Setting the random seed, feel free to change it and see different solutions.
+np.random.seed(42)
+
+def sigmoid(x):
+    return 1/(1+np.exp(-x))
+def sigmoid_prime(x):
+    return sigmoid(x)*(1-sigmoid(x))
+def prediction(X, W, b):
+    return sigmoid(np.matmul(X,W)+b)
+def error_vector(y, y_hat):
+    return [-y[i]*np.log(y_hat[i]) - (1-y[i])*np.log(1-y_hat[i]) for i in range(len(y))]
+def error(y, y_hat):
+    ev = error_vector(y, y_hat)
+    return sum(ev)/len(ev)
+
+# TODO: Fill in the code below to calculate the gradient of the error function.
+# The result should be a list of three lists:
+# The first list should contain the gradient (partial derivatives) with respect to w1
+# The second list should contain the gradient (partial derivatives) with respect to w2
+# The third list should contain the gradient (partial derivatives) with respect to b
+def dErrors(X, y, y_hat):
+    DErrorsDx1 = []
+    DErrorsDx2 = []
+    DErrorsDb  = []
+    for i in range(len(X)):
+        yp = y[i] - y_hat[i]
+        DErrorsDx1.append(yp * X[i][0])
+        DErrorsDx2.append(yp * X[i][1])
+        DErrorsDb.append(yp)
+    return DErrorsDx1, DErrorsDx2, DErrorsDb
+
+# TODO: Fill in the code below to implement the gradient descent step.
+# The function should receive as inputs the data X, the labels y,
+# the weights W (as an array), and the bias b.
+# It should calculate the prediction, the gradients, and use them to
+# update the weights and bias W, b. Then return W and b.
+# The error e will be calculated and returned for you, for plotting purposes.
+def gradientDescentStep(X, y, W, b, learn_rate = 0.01):
+    # TODO: Calculate the prediction
+    y_hat = prediction(X,W,b)
+    # TODO: Calculate the gradient
+    e = dErrors(X,y,y_hat)
+    # TODO: Update the weights
+    for i in range(len(X)):
+        W[0] += learn_rate * e[0][i]
+        W[1] += learn_rate * e[1][i]
+        b    += learn_rate * e[2][i]
+    # This calculates the error
+    e = error(y, y_hat)
+    return W, b, e
