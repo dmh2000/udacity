@@ -1,0 +1,16 @@
+Convolutional Neural Networks
+
+recommended hyperparameters for convolutional layer in Keras
+
+Convolution2D(filters, kernel_size,stride,padding,activation,input_shape)
+
+Convolution2D(16, 2 .. 5 ,1,'same','relu',32,32,3) # images is 32x32x3 color image
+Convolution2D(32, 2 .. 5 ,1,'same','relu',)
+Convolution2D(64, 2 .. 5 ,1,'same','relu')
+
+Convolution2D(16, 2 .. 5 ,1,'same','relu',32,32,3) # images is 32x32x3 color image
+MaxPolling2D(2,2,(default))
+Convolution2D(32, 2 .. 5 ,1,'same','relu',)
+MaxPolling2D(2,2,(default))
+Convolution2D(64, 2 .. 5 ,1,'same','relu')
+MaxPolling2D(2,2,(default))
