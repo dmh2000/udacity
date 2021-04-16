@@ -1,3 +1,3 @@
-Machine Learning Nanodegree
+Udacity Machine Learning Nanodegree
 
-https://github.com/udacity/machine-learning
+https://confirm.udacity.com/Y9VGA2GK
